@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - backend
+    environment:
+      - APP_PORT=8080
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - DB_PORT=5432
+      - DB_HOST=db
+
+  db:
+    image: "postgres:alpine"
+    networks:
+      - backend
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+networks:
+  backend:
+    driver: bridge
